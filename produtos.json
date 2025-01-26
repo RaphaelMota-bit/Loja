@@ -1,0 +1,114 @@
+[
+    {
+        "id": 1,
+        "name": "Camisa",
+        "price": 1.0,
+        "images": [
+            "rosca.jpg"
+        ],
+        "quantity": 6,
+        "tamanhos": [
+            "P",
+            "M",
+            "G",
+            "GG"
+        ],
+        "avaliacoes": "3.5, 4, 4.5, 1, 1, 1, 5, 1, 1, 1, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 3, 3, 3, 3, 3, 3, 5, 5, 5, 5, 5, 5, 5, 1, 1, 3, 1, 1, 1, 2, 5, 5, 5, 5, 3, 5, 3, 5, 5, 5, 3, 5, 5, 1, 5, 5, 5, 5, 5, 5, 4, 5",
+        "media_avaliacoes": 5.0
+    },
+    {
+        "id": 2,
+        "name": "Calça_Sem_P",
+        "price": 5.0,
+        "images": [
+            "nescau.jpg"
+        ],
+        "quantity": 10,
+        "tamanhos": [
+            "M",
+            "G",
+            "GG"
+        ],
+        "avaliacoes": "3.5, 4, 4.5"
+    },
+    {
+        "id": 3,
+        "name": "Shino",
+        "price": 100.0,
+        "images": [
+            "shino.jpg"
+        ],
+        "quantity": 20,
+        "tamanhos": [
+            "P",
+            "M",
+            "G",
+            "GG"
+        ],
+        "avaliacoes": "3.5, 4, 4.5"
+    },
+    {
+        "id": 4,
+        "name": "Calça Cargo",
+        "price": 100.0,
+        "images": [
+            "shino.jpg"
+        ],
+        "quantity": 1,
+        "tamanhos": [
+            "P",
+            "M",
+            "G",
+            "GG"
+        ],
+        "avaliacoes": "3.5, 4, 4.5"
+    },
+    {
+        "id": 5,
+        "name": "Short Shino",
+        "price": 100.0,
+        "images": [
+            "shino.jpg"
+        ],
+        "quantity": 1000,
+        "tamanhos": [
+            "P",
+            "M",
+            "G",
+            "GG"
+        ],
+        "avaliacoes": "3.5, 4, 4.5"
+    },
+    {
+        "id": 6,
+        "name": "Short Shino",
+        "price": 100.0,
+        "images": [
+            "shino.jpg"
+        ],
+        "quantity": 1000,
+        "tamanhos": [
+            "P",
+            "M",
+            "G",
+            "GG"
+        ],
+        "avaliacoes": "3.5, 4, 4.5"
+    },
+    {
+        "id": 7,
+        "name": "Short Shino",
+        "price": 100.0,
+        "images": [
+            "shino.jpg"
+        ],
+        "quantity": 1000,
+        "tamanhos": [
+            "P",
+            "M",
+            "G",
+            "GG"
+        ],
+        "avaliacoes": "3.5, 4, 4.5"
+    }
+]

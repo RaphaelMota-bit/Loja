@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ produto.name }}</title>
+    <style>
+.product {
+    /* Container externo */
+    display: flex;
+    align-items: center;
+    border: 1px solid #ccc;
+    padding: 8px;
+    background-color: transparent;
+    box-shadow: 0 2px 4px rgba(247, 247, 247, 0.1);
+    margin: auto;
+    width: 90%;
+    height: auto;
+}
+
+.product-images img {
+    /* Estilo da imagem */
+    max-width: 400px;
+    height: auto;
+    margin-right: 200px;
+    margin-left: 80px;
+}
+
+.product-info {
+    /* Container interno */
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+}
+
+.product-info h3 {
+    /* Nome do produto */
+    font-family: "Arial", sans-serif;
+    font-size: 1.8em;
+    color: #333;
+    margin-bottom: 10px;
+}
+
+.prince {
+    /* Preços */
+    font-weight: bold;
+    font-size: 2.1em;
+    color: orangered;
+    margin: 8px 0;
+}
+
+.quantity {
+    /* Quantidade */
+    font-size: 1em;
+    color: #555;
+}
+
+.tamanho-container {
+    /* Estilo do container de tamanhos */
+    display: flex;
+    flex-wrap: nowrap;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.tamanho-item {
+    /* Estilo dos itens de tamanho */
+    flex: 0 0 auto;
+    width: 70px;
+    padding: 5px 10px;
+    border: 1px solid #ccc;
+    border-radius: 15px;
+    text-align: center;
+    background-color: #f5f5f5;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.tamanho-item:hover {
+    background-color: #ffffff;
+    transition: background-color 0.3s ease;
+}
+
+.rating {
+    /* Contêiner das estrelas */
+    display: flex;
+    flex-direction: row; /* Alinhamento das estrelas da esquerda para a direita */
+    gap: 5px; /* Espaçamento entre estrelas */
+    margin-top: 10px;
+}
+
+.star {
+    /* Estilo básico das estrelas */
+    font-size: 30px;
+    color: #ccc; /* Cor padrão */
+    cursor: pointer;
+    position: relative;
+}
+
+.star.active {
+    /* Estilo para estrelas preenchidas */
+    color: gold;
+}
+
+.star.half {
+    /* Estilo para estrelas parcialmente preenchidas */
+    color: gold;
+}
+
+.rating-value {
+    /* Exibição do valor da avaliação */
+    font-size: 1.2em;
+    margin-top: 10px;
+}
+
+    </style>
+</head>
+<body>
+    <div class="product">
+        <div class="product-images">
+            <img src="{{ url_for('static', filename='images/' + produto.images[0]) }}" alt="{{ produto.name }}">
+        </div>
+        <div class="product-info">
+            <h3>{{ produto.name }}</h3>
+            <p class="prince">R$ {{ produto.price }}</p>
+            <p class="quantity">Quantidade: {{ produto.quantity }}</p>
+            <h3>Tamanho:</h3>
+            <div class="tamanho-container">
+                {% for tamanho in produto.tamanhos %}
+                <div class="tamanho-item">{{ tamanho }}</div>
+                {% endfor %}
+            </div>
+
+            <!-- Exibir a avaliação média -->
+<!-- Exibir a avaliação média -->
+<div class="rating">
+    {% for estrela in estrelas %}
+        <span class="star {{ 'active' if estrela <= media_avaliacoes else '' }}">
+            &#9733;
+        </span>
+        {% if estrela - media_avaliacoes >= 0.5 and estrela - media_avaliacoes < 1 %}
+            <span class="star half">&#9733;</span>
+        {% endif %}
+    {% endfor %}
+</div>
+<p class="rating-value">Avaliação Média: {{ media_avaliacoes }} / 5</p>
+
+
+
+            <!-- Formulário de avaliação -->
+            <h4>Avaliar Produto</h4>
+            <div class="rating">
+                {% for i in arange(5, 0, -1) %}
+                    <span class="star" data-value="{{ i }}">&#9733;</span>
+                    {% if i - media_avaliacoes >= 0.5 and i - media_avaliacoes < 1 %}
+                        <span class="star half" data-value="{{ i + 0.5 }}">&#9733;</span>
+                    {% endif %}
+                {% endfor %}
+            </div>
+            <button id="enviar-avaliacao">Enviar Avaliação</button>
+        </div>
+    </div>
+
+    <div>
+        <h2>Outros Produtos</h2>
+        {% for produto in produtos %}
+        <div class="product">
+            <a href="/produto/{{ produto.id }}">
+                <h3>{{ produto.name }}</h3>
+            </a>
+            <p class="prince">R$ {{ produto.price }}</p>
+        </div>
+        {% endfor %}
+    </div>
+
+    <script>
+      document.querySelectorAll('.rating .star').forEach((star, index, stars) => {
+    star.addEventListener('click', function () {
+        const rating = index + 1; // Avaliação com base na posição da estrela clicada (esquerda para direita)
+
+        // Preencher estrelas até a clicada
+        stars.forEach((s, i) => {
+            s.classList.remove('active', 'half');
+            if (i < rating) {
+                s.classList.add('active');
+            }
+        });
+
+        // Enviar a avaliação para o backend
+        document.getElementById('enviar-avaliacao').addEventListener('click', function () {
+            fetch(`/avaliar/{{ produto.id }}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ avaliacao: rating }),
+            })
+                .then((response) => response.json())
+                .then((data) => {
+                    alert(data.message);
+                    // Atualiza a exibição da avaliação média
+                    document.querySelector(
+                        '.rating-value'
+                    ).textContent = `Avaliação Média: ${data.newAverage} / 5`;
+                })
+                .catch((error) => {
+                    alert('Erro ao enviar avaliação!');
+                });
+        });
+    });
+});
+
+    </script>

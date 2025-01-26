@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8">
+    <title>Loja</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <style>
+        /* Estilização corrigida conforme o original */
+        body { 
+            background: url('/static/images/textura_jeans.jpg') no-repeat center center fixed;
+            background-size: cover;
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        .flex-center {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        h1, h2 {
+            text-align: center;
+            color: white;
+        }
+
+        .search-container {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .search-container input {
+            padding: 10px;
+            width: 300px;
+            font-size: 1em;
+            margin-right: 10px;
+        }
+
+        .search-container button {  /* botão pra pesquisa */
+            padding: 10px;
+            font-size: 1.2em;
+            cursor: pointer;
+            background: none;
+            border: none;
+        }
+
+        .search-container i { /* container de pesquisa */
+            font-size: 1.5em;
+            color: white;
+            transform: scaleX(-1);
+        }
+
+        #categoryMessage { /* mensagem ao clicar na categoria */
+            text-align: center;
+            margin-top: 20px;
+            font-size: 1.5em;
+            color: white;
+            font-weight: bold;
+        }
+
+        .titles-container {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            padding: 10px 0;
+            margin-bottom: 20px;
+        }
+
+        .title {
+            font-size: 1.0em;
+            font-weight: bold;
+            text-align: center;
+        }
+
+        .title-image {
+            width: 50px;
+            height: auto;
+        }
+
+        .product-list {  /* mexe no container externo dos produtos */
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: center;
+            margin-top: 20px;
+            margin-bottom: 40px;
+        }
+
+        .product {   /* mexe no container interno dos produtos */
+            border: 1px solid #ccc;
+            padding: 8px;
+            text-align: center;
+            width: 150px;
+            background-color: white;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .product img {      /* mexe nas imagens dos produtos */
+            max-width: 100%;
+            height: auto;
+            width: 150px;  /* Define a largura fixa */
+            height: 150px; /* Define a altura fixa */
+            object-fit: cover; /* Faz com que a imagem cubra completamente a área sem distorção */
+        }
+
+        .product h3 {  /* mexe no titulo dos produtos */
+            font-size: 1.2em , bold;
+            color: black;
+        }
+
+        .prince {  /* mexe no preço dos produtos */
+            font-size: 1.2em;
+            color: black;
+        }
+
+        a {
+            text-decoration: none;  /* link sublinhado ou não */
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        /* Estilo para a área de login e criação de conta */
+        .auth-links {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            display: flex;
+            gap: 15px;
+        }
+
+        .auth-links a {
+            color: white;
+            font-weight: bold;
+            font-size: 1.2em;
+        }
+
+        .auth-links a:hover {
+            text-decoration: underline;
+        }
+
+    </style>
+</head>
+<body>
+
+    <!-- Cabeçalho com logo e links de autenticação -->
+    <div class="flex-center">
+        <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Logo">
+    </div>
+
+    <!-- Links de login e criar conta no canto superior direito -->
+    <div class="auth-links">
+        <a href="/criar-conta">Crie a sua conta</a>
+        <a href="/login">Entre</a>
+    </div>
+
+    <!-- Barra de pesquisa -->
+    <div class="search-container">
+        <input type="text" id="searchInput" placeholder="Pesquise por produtos" />
+        <button onclick="searchProduct()">
+            <i class="fas fa-search"></i>
+        </button>
+    </div>
+
+    <!-- Categorias -->
+    <div class="titles-container">
+        <div class="title" onclick="filterByCategory('camisa')">
+            <img src="{{ url_for('static', filename='images/camisa_desenho.png') }}" alt="Camisa" class="title-image">
+            <h2>Camisas</h2>
+        </div>
+        <div class="title" onclick="filterByCategory('calça')">
+            <img src="{{ url_for('static', filename='images/calça_desenho.png') }}" alt="Calça" class="title-image">
+            <h2>Calças</h2>
+        </div>
+        <div class="title" onclick="filterByCategory('bermuda')">
+            <img src="{{ url_for('static', filename='images/bermuda_desenho.png') }}" alt="Bermuda" class="title-image">
+            <h2>Bermudas</h2>
+        </div>
+        <div class="title" onclick="filterByCategory('short')">
+            <img src="{{ url_for('static', filename='images/short_desenho.png') }}" alt="Short" class="title-image">
+            <h2>Shorts</h2>
+        </div>
+        <div class="title" onclick="filterByCategory('boné')">
+            <img src="{{ url_for('static', filename='images/boné_desenho.png') }}" alt="Boné" class="title-image">
+            <h2>Bonés</h2>
+        </div>
+    </div>
+
+    <!-- Mensagem dinâmica -->
+    <div id="categoryMessage"></div>
+
+    <!-- Produtos -->
+    <div class="product-list">
+        {% for produto in produtos %}
+        <div class="product">
+            <a href="/produto/{{ produto.id }}">
+                <div class="product-images">
+                    {% for image in produto.images %}
+                    <img src="{{ url_for('static', filename='images/' + image) }}" alt="{{ produto.name }}">
+                    {% endfor %}
+                </div>
+            </a>
+            <a href="/produto/{{ produto.id }}">
+                <h3>{{ produto.name }}</h3>
+            </a>
+            <p class="prince">R$ {{ produto.price }}</p>
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- Scripts -->
+    <script>
+        let currentCategory = null; // Variável para armazenar a categoria atual
+    
+        function filterByCategory(category) {
+            const products = document.querySelectorAll('.product');
+            const categoryMessageElement = document.getElementById('categoryMessage');
+            let categoryMessage = '';  // Variável para armazenar a mensagem da categoria
+    
+            if (currentCategory === category) {
+                // Se a mesma categoria for clicada, remova o filtro
+                currentCategory = null;
+                categoryMessageElement.innerHTML = '';  // Limpa a mensagem
+                products.forEach(function(product) {
+                    product.style.display = 'block'; // Exibe todos os produtos novamente
+                });
+            } else {
+                // Se for uma nova categoria, aplica o filtro
+                currentCategory = category;
+    
+                // Definir a mensagem com base no gênero da categoria
+                if (category === 'camisa' || category === 'calça' || category === 'bermuda') {
+                    categoryMessage = 'Todas as ' + category + 's'; // Feminino
+                } else {
+                    categoryMessage = 'Todos os ' + category + 's'; // Masculino
+                }
+    
+                // Exibindo a mensagem
+                categoryMessageElement.innerHTML = categoryMessage; 
+    
+                products.forEach(function(product) {
+                    const productName = product.querySelector('h3').textContent.toLowerCase();
+                    if (productName.includes(category.toLowerCase())) {
+                        product.style.display = 'block'; // Exibe produtos correspondentes
+                    } else {
+                        product.style.display = 'none'; // Oculta os produtos não correspondentes
+                    }
+                });
+            }
+        }
+    
+        // Função de pesquisa
+        function searchProduct() {
+            var searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            var products = document.querySelectorAll('.product');
+            products.forEach(function(product) {
+                var productName = product.querySelector('h3').textContent.toLowerCase();
+                if (productName.includes(searchTerm)) {
+                    product.style.display = 'block';
+                } else {
+                    product.style.display = 'none';
+                }
+            });
+        }
+    
+        document.getElementById('searchInput').addEventListener('keydown', function(event) {
+            if (event.key === 'Enter') {
+                searchProduct();
+            }
+        });
+    </script>
+
+</body>
+</html>
